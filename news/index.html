@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">trialdiff</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,14 @@
       <small>Source: <a href="https://github.com/Hirujan-R/trialdiff/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0.9000" id="trialdiff-0109000">trialdiff 0.1.0.9000<a class="anchor" aria-label="anchor" href="#trialdiff-0109000"></a></h2>
+<ul><li>
+<code><a href="../reference/as_register.html">as_register()</a></code> now coerces key columns to character, fixing a failure when key columns were not character.</li>
+<li>New records in visit-based datasets are classified as <code>new_visit</code> rather than <code>new_assessment</code>.</li>
+<li>Added edge-case tests; package coverage now exceeds 90%.</li>
+<li>Bumped GitHub Actions and added Codecov configuration.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="trialdiff-010">trialdiff 0.1.0<a class="anchor" aria-label="anchor" href="#trialdiff-010"></a></h2>
 <ul><li>First tagged release. Five composable layers: compare, classify, trace, assess and report.</li>

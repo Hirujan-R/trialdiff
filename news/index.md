@@ -1,5 +1,15 @@
 # Changelog
 
+## trialdiff 0.1.0.9000
+
+- [`as_register()`](https://Hirujan-R.github.io/trialdiff/reference/as_register.md)
+  now coerces key columns to character, fixing a failure when key
+  columns were not character.
+- New records in visit-based datasets are classified as `new_visit`
+  rather than `new_assessment`.
+- Added edge-case tests; package coverage now exceeds 90%.
+- Bumped GitHub Actions and added Codecov configuration.
+
 ## trialdiff 0.1.0
 
 - First tagged release. Five composable layers: compare, classify,
