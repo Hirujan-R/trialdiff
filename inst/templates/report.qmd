@@ -1,0 +1,48 @@
+---
+title: "Data-cut change review"
+format: html
+---
+
+```{r setup, include = FALSE}
+# This template expects `trialdiff_report_data.rds` in the same directory.
+# Write it with report_diff(..., output = "trialdiff_report_data.rds")
+# after switching the format to "list", or adapt the code below.
+```
+
+## Comparison overview
+
+```{r}
+report <- readRDS("trialdiff_report_data.rds")
+knitr::kable(report$summary, caption = "Comparison summary")
+```
+
+## Changes by category
+
+```{r}
+reg <- report$register
+knitr::kable(table(reg$category_label), caption = "Changes by category")
+```
+
+## Modified values
+
+```{r}
+modified <- reg[reg$record_type == "modified", , drop = FALSE]
+knitr::kable(utils::head(modified, 50))
+```
+
+## Downstream impact
+
+```{r}
+if (!is.null(report$impacts)) {
+  knitr::kable(report$impacts)
+}
+```
+
+## Items requiring review
+
+```{r}
+knitr::kable(report$review_items)
+```
+
+> Impact assessment is a review signal derived from user-declared lineage.
+> Statistical impact requires rerunning the affected analyses.
