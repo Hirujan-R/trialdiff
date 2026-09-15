@@ -2,7 +2,7 @@ Package: trialdiff
 Title: Clinical Trial Data-Cut Change Detection and Impact Assessment
 Version: 0.0.0.9000
 Authors@R:
-    person("Hirujan", "Rajendran", email = "hirujan@users.noreply.github.com",
+    person("Hirujan", "Rangaraj", email = "hirujanrangaraj@gmail.com",
            role = c("aut", "cre"))
 Description: A transparent, rule-based framework for detecting changes between
     successive data cuts of clinical trial datasets, classifying those changes

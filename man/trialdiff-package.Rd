@@ -18,11 +18,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Hirujan Rajendran \email{hirujan@users.noreply.github.com}
+\strong{Maintainer}: Hirujan Rangaraj \email{hirujanrangaraj@gmail.com}
 
 Authors:
 \itemize{
-  \item Hirujan Rajendran \email{hirujan@users.noreply.github.com}
+  \item Hirujan Rangaraj \email{hirujanrangaraj@gmail.com}
 }
 
 }

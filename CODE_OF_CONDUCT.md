@@ -28,7 +28,7 @@ Examples of unacceptable behaviour:
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behaviour may be
-reported to the maintainer at hirujan@users.noreply.github.com. All complaints
+reported to the maintainer at hirujanrangaraj@gmail.com. All complaints
 will be reviewed and investigated promptly and fairly.
 
 ## Attribution

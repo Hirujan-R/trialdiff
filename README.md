@@ -104,5 +104,5 @@ abide by its terms.
 
 ## License
 
-MIT (c) Hirujan Rajendran. No proprietary or real patient data is included;
+MIT (c) Hirujan Rangaraj. No proprietary or real patient data is included;
 all example datasets are synthetic.
