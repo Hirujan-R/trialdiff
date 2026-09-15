@@ -166,7 +166,7 @@ td_default_rules <- function() {
     ),
     td_rule(
       "new_visit", "New visit",
-      priority = 21L,
+      priority = 19L,
       test = function(register, context) {
         register$record_type == "added" & td_context_has_visit(context)
       },
@@ -307,5 +307,5 @@ td_context_has_param <- function(context) {
 
 #' @noRd
 td_context_has_visit <- function(context) {
-  isTRUE(context$has_visit) || grepl("^(ADVS|ADLB|ADEG|ADQS|ADPC|SV|VS|LB)", context$dataset %||% "")
+  isTRUE(context$has_visit) || grepl("^(ADVS|VS|SV)$", context$dataset %||% "")
 }
