@@ -2,6 +2,10 @@
 
 ## trialdiff 0.1.0.9000
 
+- Added a `"diffdf"` comparison backend to
+  [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md),
+  which delegates value comparison to the package and translates its
+  output into a `tdiff` object (schema comparison remains built in).
 - [`as_register()`](https://Hirujan-R.github.io/trialdiff/reference/as_register.md)
   now coerces key columns to character, fixing a failure when key
   columns were not character.

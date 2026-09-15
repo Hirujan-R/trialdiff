@@ -8,7 +8,7 @@ It builds on the observation that detection is a solved problem, while
 
 | Tool / package | What it does | Where it stops | How trialdiff relates |
 |----|----|----|----|
-| `diffdf` | Detailed cell-level diff of two data frames, with keys | No clinical categorisation, no lineage, no impact | Could be used as an alternative comparison backend; `trialdiff` adds the clinical layers |
+| `diffdf` | Detailed cell-level diff of two data frames, with keys | No clinical categorisation, no lineage, no impact | Optional low-level backend (`backend = "diffdf"`); `trialdiff` adds the clinical layers |
 | `waldo` | General R object comparison, used by `testthat` | General purpose, not clinical | Optional low-level equality backend (`backend = "waldo"`) |
 | `dplyr` / `base` | Joins and set operations | Building blocks only | Used internally; no user-facing duplication |
 | `haven` | Read SAS/SPSS/Stata | Transport only | Input reader for [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md) |

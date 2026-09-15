@@ -21,7 +21,7 @@ compare_cut(
   name_new = "new",
   dataset = NULL,
   subject_var = NULL,
-  backend = c("trialdiff", "waldo"),
+  backend = c("trialdiff", "waldo", "diffdf"),
   ...
 )
 ```
@@ -78,7 +78,10 @@ compare_cut(
 
   Low-level comparison backend. `"trialdiff"` uses the built-in engine;
   `"waldo"` additionally uses waldo for whole-column equality
-  short-circuiting when it is installed.
+  short-circuiting when it is installed; `"diffdf"` delegates value
+  comparison to diffdf and translates its output into a `tdiff` object
+  (schema comparison remains built in). The `"diffdf"` backend requires
+  the diffdf package.
 
 - ...:
 
