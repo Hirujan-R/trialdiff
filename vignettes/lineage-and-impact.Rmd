@@ -1,0 +1,94 @@
+---
+title: "Lineage and impact assessment"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lineage and impact assessment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## The lineage model
+
+Lineage is a directed graph. An edge `from -> to` means "`to` depends on
+`from`". Node identifiers follow a simple convention:
+
+| Identifier       | Type       |
+|------------------|------------|
+| `ADSL`           | dataset    |
+| `ADSL.TRT01P`    | variable   |
+| `MMRM`           | analysis   |
+| `Table_14_2_1`   | output     |
+
+```{r}
+library(trialdiff)
+lineage <- define_lineage(
+  lineage_edge("ADSL.TRT01P", "ADLB.TRT01P", relationship = "groups_by"),
+  lineage_edge("ADLB.AVAL", "ADLB.BASE", relationship = "derives"),
+  lineage_edge("ADLB.AVAL", "ADLB.CHG", relationship = "derives"),
+  lineage_edge("ADLB.AVAL", "MMRM", relationship = "models"),
+  lineage_edge("MMRM", "Table_14_2_1", relationship = "reports")
+)
+lineage
+```
+
+Edges can carry a `condition`, for example `TRT01P == "Drug A"`, which is
+recorded for transparency but not evaluated by the package.
+
+## Tracing
+
+`trace_dependencies()` performs a breadth-first traversal and returns the path
+taken, so every flag can be explained.
+
+```{r}
+trace_dependencies(lineage, from = "ADLB.AVAL")
+```
+
+Upstream tracing is also supported:
+
+```{r}
+trace_dependencies(lineage, from = "Table_14_2_1", direction = "upstream")
+```
+
+## Impact assessment
+
+`assess_impact()` maps classified changes onto the lineage graph. Each reached
+node is graded and given a rationale.
+
+```{r}
+classified <- classify_changes(
+  compare_cut(adsl_cut1, adsl_cut2, by = "USUBJID", dataset = "ADSL")
+)
+impact <- assess_impact(classified, adsl_adlb_lineage)
+impact$impacts[, c("node", "node_type", "level", "depth", "requires_rerun")]
+```
+
+The grading rules are exposed through [impact_policy()], so a study team can
+agree and document its own conventions.
+
+```{r}
+impact_policy()
+```
+
+## Why "definitely" versus "potentially"?
+
+A downstream *variable* that is derived directly from a changed variable is
+marked `definitely_affected`, because the derivation deterministically reads the
+changed value. Analyses and outputs are marked `potentially_affected`: whether
+a summary or model result actually changes depends on the data and the method,
+and can only be confirmed by rerunning.
+
+## Lineage gaps
+
+If a changed node has no declared lineage, `trialdiff` does not guess. It lists
+the gap and asks for review:
+
+```{r}
+impact$unlinked
+```
+
+This is a feature, not a limitation: the impact assessment is only as complete
+as the lineage metadata, and the report makes that explicit.

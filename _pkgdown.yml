@@ -1,0 +1,67 @@
+url: https://Hirujan-R.github.io/trialdiff/
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Getting started
+        href: articles/trialdiff.html
+      - text: Change classification
+        href: articles/change-classification.html
+      - text: Lineage and impact
+        href: articles/lineage-and-impact.html
+      - text: Ecosystem
+        href: articles/ecosystem.html
+
+reference:
+- title: Compare
+  desc: Compare two data cuts.
+  contents:
+  - compare_cut
+  - as_register
+  - tdiff-object
+- title: Classify
+  desc: Rule-based clinical change classification.
+  contents:
+  - classify_changes
+  - td_rule
+  - td_default_rules
+  - td_categories
+- title: Trace
+  desc: Define and query data lineage.
+  contents:
+  - define_lineage
+  - lineage_edge
+  - trace_dependencies
+  - as_igraph
+- title: Assess
+  desc: Assess downstream impact.
+  contents:
+  - assess_impact
+  - impact_policy
+- title: Report
+  desc: Human- and machine-readable reports.
+  contents:
+  - report_diff
+  - as_json
+- title: Data
+  desc: Synthetic example data.
+  contents:
+  - adsl_cut1
+  - adlb_cut1
+  - adsl_adlb_lineage
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - trialdiff
+  - change-classification
+  - lineage-and-impact
+  - ecosystem

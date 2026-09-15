@@ -1,0 +1,92 @@
+---
+title: "The change-classification system"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The change-classification system}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Design principles
+
+Classification in `trialdiff` is deliberately boring and auditable:
+
+* every change is a row in a long *change register* ([as_register()]);
+* every category comes from an explicit [td_rule()];
+* the first matching rule (by priority) sets the primary category, but **all**
+  matching rules are retained in `category_all`;
+* each change carries a plain-language `reason`.
+
+There is no machine learning and no hidden scoring.
+
+## The built-in categories
+
+```{r}
+library(trialdiff)
+td_categories()
+```
+
+## The change register
+
+```{r}
+diff <- compare_cut(adsl_cut1, adsl_cut2, by = "USUBJID", dataset = "ADSL")
+reg <- as_register(diff)
+reg[, c(".change_id", "record_type", "USUBJID", "variable", "old_value",
+        "new_value", "change")]
+```
+
+## Applying the default rules
+
+```{r}
+classified <- classify_changes(diff)
+classified$register[, c(".change_id", "category", "category_label", "reason")]
+```
+
+## Writing a custom rule
+
+A rule is a predicate over the register. The `context` contains the dataset
+name, keys and the sets of subjects present in each cut.
+
+```{r}
+age_rule <- td_rule(
+  name = "age_change",
+  label = "Age change",
+  priority = 1L,
+  test = function(register, context) {
+    register$record_type == "modified" & register$variable == "AGE"
+  },
+  reason = function(register, context) {
+    sprintf("Age changed for %s.", register$.subject)
+  }
+)
+
+custom <- classify_changes(
+  diff,
+  rules = c(list(age_rule), td_default_rules())
+)
+custom$register$category[custom$register$variable == "AGE"]
+```
+
+## Prioritisation
+
+Rules are evaluated in ascending priority order. This matters when more than one
+rule could apply. For example, `AVAL` is a derived variable *and* a value can
+transition from missing to non-missing. Missingness transitions have a higher
+priority than the generic derived-variable rule, because they are more
+actionable for review:
+
+```{r}
+old <- data.frame(USUBJID = c("S1", "S2"), AVAL = c(NA, 5))
+new <- data.frame(USUBJID = c("S1", "S2"), AVAL = c(3, NA))
+classified_missing <- classify_changes(compare_cut(old, new, by = "USUBJID",
+                                                    dataset = "ADLB"))
+classified_missing$modified[, c("USUBJID", "variable", "change", "category")]
+```
+
+Any change that no rule matches is marked `unclassified` and surfaced in the
+report as an item requiring manual review, so the rule set can never silently
+hide a change.
