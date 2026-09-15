@@ -9,6 +9,7 @@
 ^\.lintr$
 ^\.covrignore$
 ^cran-comments\.md$
+^codecov\.yml$
 ^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
