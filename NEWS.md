@@ -1,5 +1,8 @@
 # trialdiff 0.1.0.9000
 
+* Added a `"diffdf"` comparison backend to `compare_cut()`, which delegates
+  value comparison to the \pkg{diffdf} package and translates its output into a
+  `tdiff` object (schema comparison remains built in).
 * `as_register()` now coerces key columns to character, fixing a failure when
   key columns were not character.
 * New records in visit-based datasets are classified as `new_visit` rather than

@@ -523,7 +523,7 @@ is hidden.
 | `cards` | ARD-producing analyses are lineage analysis nodes. |
 | `tern`/`rtables` | TLF outputs are lineage output nodes. |
 | `pharmaverseadam`/`pharmaversesdtm` | Public datasets for examples and tests. |
-| `diffdf` | Alternative low-level comparison backend (planned adapter). |
+| `diffdf` | Low-level comparison backend (`backend = "diffdf"`). |
 | `waldo` | Optional whole-column equality backend (`backend = "waldo"`). |
 | `xportr` | Transport of flagged datasets; no direct coupling. |
 
@@ -660,7 +660,7 @@ optional, richer examples.
 * Synthetic data, tests, vignettes, CI.
 
 **v0.1 - hardening**
-* `diffdf` backend adapter.
+* `diffdf` backend adapter (implemented).
 * `metacore`-driven variable type/label enrichment.
 * Session-info and package-version stamping in reports.
 * Quarto template completed.

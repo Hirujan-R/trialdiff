@@ -74,6 +74,10 @@ that are specific to clinical programming:
 * **review reports** that name the objects a programmer or statistician must
   check.
 
+It can even delegate the low-level comparison itself: `compare_cut(...,
+backend = "diffdf")` uses `diffdf` to detect differences and translates the
+result into the same `tdiff` object.
+
 ## Design principles
 
 * Deterministic comparison, not opaque inference.
