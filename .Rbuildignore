@@ -2,6 +2,7 @@
 ^_pkgdown\.yml$
 ^pkgdown$
 ^docs$
+^proposal$
 ^data-raw$
 ^CODE_OF_CONDUCT\.md$
 ^CONTRIBUTING\.md$
@@ -9,3 +10,5 @@
 ^\.covrignore$
 ^cran-comments\.md$
 ^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$

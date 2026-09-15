@@ -94,7 +94,7 @@ that are specific to clinical programming:
 
 A full proposal covering the problem statement, ecosystem/gap analysis, novelty
 assessment, architecture, testing and roadmap is available in
-[`docs/proposal/trialdiff-proposal.md`](docs/proposal/trialdiff-proposal.md).
+[`proposal/trialdiff-proposal.md`](proposal/trialdiff-proposal.md).
 
 ## Code of conduct
 

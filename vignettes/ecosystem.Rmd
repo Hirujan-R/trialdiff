@@ -54,4 +54,4 @@ The novelty is *not* in comparison. It is in the combination of:
 4. reporting that lists exactly what a programmer or statistician must review.
 
 No package in the pharmaverse currently occupies this position. See the project
-proposal in `docs/proposal/` for the full gap analysis and roadmap.
+proposal in `proposal/` for the full gap analysis and roadmap.

@@ -4,9 +4,7 @@
 .Ruserdata
 *.Rproj
 .Rproj.user
-docs/*
-!docs/proposal/
-!docs/proposal/**
+docs/
 inst/doc
 *.tar.gz
 *.Rcheck/

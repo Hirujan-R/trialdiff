@@ -702,8 +702,9 @@ trialdiff/
 ├── data/                     # synthetic .rda
 ├── data-raw/synthetic-data.R
 ├── inst/templates/           # report templates
-└── docs/                     # pkgdown site + proposal
-    └── proposal/trialdiff-proposal.md
+├── proposal/                 # this project proposal
+│   └── trialdiff-proposal.md
+└── docs/                     # pkgdown site (generated, deployed to gh-pages)
 ```
 
 ---
