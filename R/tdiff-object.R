@@ -96,7 +96,9 @@ as_register.tdiff <- function(x, ...) {
     }
     missing <- setdiff(by, names(df))
     for (m in missing) df[[m]] <- NA_character_
-    df[, by, drop = FALSE]
+    out <- df[, by, drop = FALSE]
+    out[] <- lapply(out, as.character)
+    out
   }
 
   if (nrow(x$added) > 0L) {
