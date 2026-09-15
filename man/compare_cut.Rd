@@ -16,7 +16,7 @@ compare_cut(
   name_new = "new",
   dataset = NULL,
   subject_var = NULL,
-  backend = c("trialdiff", "waldo"),
+  backend = c("trialdiff", "waldo", "diffdf"),
   ...
 )
 }
@@ -51,7 +51,10 @@ function looks for \code{USUBJID}, then falls back to the first key.}
 
 \item{backend}{Low-level comparison backend. \code{"trialdiff"} uses the built-in
 engine; \code{"waldo"} additionally uses \pkg{waldo} for whole-column equality
-short-circuiting when it is installed.}
+short-circuiting when it is installed; \code{"diffdf"} delegates value
+comparison to \pkg{diffdf} and translates its output into a \code{tdiff}
+object (schema comparison remains built in). The \code{"diffdf"} backend
+requires the \pkg{diffdf} package.}
 
 \item{...}{Reserved for future extensions.}
 }

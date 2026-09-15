@@ -30,7 +30,10 @@
 #'   function looks for `USUBJID`, then falls back to the first key.
 #' @param backend Low-level comparison backend. `"trialdiff"` uses the built-in
 #'   engine; `"waldo"` additionally uses \pkg{waldo} for whole-column equality
-#'   short-circuiting when it is installed.
+#'   short-circuiting when it is installed; `"diffdf"` delegates value
+#'   comparison to \pkg{diffdf} and translates its output into a `tdiff`
+#'   object (schema comparison remains built in). The `"diffdf"` backend
+#'   requires the \pkg{diffdf} package.
 #' @param ... Reserved for future extensions.
 #'
 #' @return An object of class `tdiff`: a list with elements `meta`, `added`,
@@ -61,7 +64,7 @@ compare_cut <- function(old,
                         name_new = "new",
                         dataset = NULL,
                         subject_var = NULL,
-                        backend = c("trialdiff", "waldo"),
+                        backend = c("trialdiff", "waldo", "diffdf"),
                         ...) {
   backend <- match.arg(backend)
   call <- match.call()
@@ -99,21 +102,32 @@ compare_cut <- function(old,
   key_old <- td_make_key(old, by)
   key_new <- td_make_key(new, by)
 
-  removed_keys <- setdiff(key_old, key_new)
-  added_keys <- setdiff(key_new, key_old)
+  dd <- NULL
+  if (identical(backend, "diffdf")) {
+    dd <- td_compare_diffdf(old, new, by, compare_vars, tolerance)
+  }
 
-  removed <- old[match(removed_keys, key_old), , drop = FALSE]
-  added <- new[match(added_keys, key_new), , drop = FALSE]
+  if (!is.null(dd)) {
+    added <- dd$added
+    removed <- dd$removed
+    modified <- dd$modified
+  } else {
+    removed_keys <- setdiff(key_old, key_new)
+    added_keys <- setdiff(key_new, key_old)
 
-  modified <- td_compare_rows(
-    old, new,
-    by = by,
-    compare_vars = compare_vars,
-    key_old = key_old,
-    key_new = key_new,
-    tolerance = tolerance,
-    backend = backend
-  )
+    removed <- old[match(removed_keys, key_old), , drop = FALSE]
+    added <- new[match(added_keys, key_new), , drop = FALSE]
+
+    modified <- td_compare_rows(
+      old, new,
+      by = by,
+      compare_vars = compare_vars,
+      key_old = key_old,
+      key_new = key_new,
+      tolerance = tolerance,
+      backend = backend
+    )
+  }
 
   added <- td_annotate_records(added, by, subject_var)
   removed <- td_annotate_records(removed, by, subject_var)
@@ -121,6 +135,9 @@ compare_cut <- function(old,
     modified$.subject <- td_subject_of(modified, subject_var = subject_var, by = by)
   } else if (nrow(modified) == 0L && !".subject" %in% names(modified)) {
     modified$.subject <- character()
+  }
+  if (nrow(modified) > 0L && !".key" %in% names(modified)) {
+    modified$.key <- td_make_key(modified, by)
   }
 
   summary <- td_summary_table(
@@ -392,4 +409,119 @@ td_summary_table <- function(old, new, by, added, removed, modified, schema,
       nrow(schema)
     )
   )
+}
+
+#' Compare rows using the diffdf backend
+#'
+#' Delegates value comparison to \pkg{diffdf} and translates its result into
+#' the same added/removed/modified tables produced by the built-in engine.
+#' Returns `NULL` (with a warning) when diffdf is unavailable or errors, so
+#' the caller can fall back to the built-in engine.
+#' @noRd
+td_compare_diffdf <- function(old, new, by, compare_vars, tolerance) {
+  if (!td_has_package("diffdf")) {
+    td_abort(c(
+      "Package {.pkg diffdf} is required for {.code backend = \"diffdf\"}.",
+      "i" = "Install it with {.run install.packages(\"diffdf\")}."
+    ), class = "trialdiff_error_backend")
+  }
+
+  res <- tryCatch(
+    suppressWarnings(diffdf::diffdf(
+      base = as.data.frame(old, stringsAsFactors = FALSE),
+      compare = as.data.frame(new, stringsAsFactors = FALSE),
+      keys = by,
+      tolerance = tolerance,
+      suppress_warnings = TRUE
+    )),
+    error = function(e) e
+  )
+
+  if (inherits(res, "error")) {
+    td_warn(c(
+      "The {.pkg diffdf} backend failed; using the built-in engine instead.",
+      "i" = "Reason: {conditionMessage(res)}"
+    ), class = "trialdiff_warning_backend_fallback")
+    return(NULL)
+  }
+
+  added <- td_rows_from_keys(res[["ExtRowsComp"]], new, by)
+  removed <- td_rows_from_keys(res[["ExtRowsBase"]], old, by)
+
+  modified <- td_diffdf_modified(res, by, compare_vars)
+
+  list(added = added, removed = removed, modified = modified)
+}
+
+#' @noRd
+td_rows_from_keys <- function(key_df, data, by) {
+  if (is.null(key_df) || nrow(key_df) == 0L) {
+    return(data[0L, , drop = FALSE])
+  }
+  missing <- setdiff(by, names(key_df))
+  if (length(missing) > 0L) {
+    return(data[0L, , drop = FALSE])
+  }
+  keys <- td_make_key(key_df, by)
+  idx <- match(keys, td_make_key(data, by))
+  idx <- idx[!is.na(idx)]
+  data[idx, , drop = FALSE]
+}
+
+#' @noRd
+td_diffdf_modified <- function(res, by, compare_vars) {
+  var_names <- grep("^VarDiff_", names(res), value = TRUE)
+  empty <- tibble::tibble(
+    !!!stats::setNames(rep(list(character()), length(by)), by),
+    variable = character(),
+    old_value = character(),
+    new_value = character(),
+    change = character()
+  )
+  if (length(var_names) == 0L) {
+    return(empty)
+  }
+
+  pieces <- list()
+  for (nm in var_names) {
+    variable <- sub("^VarDiff_", "", nm)
+    if (!variable %in% compare_vars) {
+      next
+    }
+    v <- res[[nm]]
+    if (is.null(v) || nrow(v) == 0L) {
+      next
+    }
+    base_vals <- v[["BASE"]]
+    comp_vals <- v[["COMPARE"]]
+    old_na <- td_is_na(base_vals)
+    new_na <- td_is_na(comp_vals)
+    kind <- rep("value", nrow(v))
+    kind[old_na & !new_na] <- "missing_to_value"
+    kind[!old_na & new_na] <- "value_to_missing"
+
+    keys <- v[, by, drop = FALSE]
+    pieces[[length(pieces) + 1L]] <- dplyr::bind_cols(
+      keys,
+      tibble::tibble(
+        variable = variable,
+        old_value = vapply(
+          seq_along(base_vals),
+          function(i) td_format_value(base_vals[i]),
+          character(1)
+        ),
+        new_value = vapply(
+          seq_along(comp_vals),
+          function(i) td_format_value(comp_vals[i]),
+          character(1)
+        ),
+        change = kind
+      )
+    )
+  }
+
+  if (length(pieces) == 0L) {
+    return(empty)
+  }
+  dplyr::bind_rows(pieces)
 }
