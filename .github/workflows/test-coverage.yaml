@@ -7,7 +7,9 @@ on:
 
 name: test-coverage
 
-permissions: read-all
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   test-coverage:
@@ -41,4 +43,4 @@ jobs:
         with:
           fail_ci_if_error: false
           file: ./cobertura.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
