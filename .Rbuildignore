@@ -1,0 +1,11 @@
+^\.github$
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+^data-raw$
+^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
+^\.lintr$
+^\.covrignore$
+^cran-comments\.md$
+^LICENSE\.md$

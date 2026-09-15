@@ -1,0 +1,52 @@
+Package: trialdiff
+Title: Clinical Trial Data-Cut Change Detection and Impact Assessment
+Version: 0.0.0.9000
+Authors@R:
+    person("Hirujan", "Rajendran", email = "hirujan@users.noreply.github.com",
+           role = c("aut", "cre"))
+Description: A transparent, rule-based framework for detecting changes between
+    successive data cuts of clinical trial datasets, classifying those changes
+    into clinically meaningful categories, tracing user-defined data lineage,
+    and assessing which downstream analyses and outputs may be affected.
+    The package is designed to complement existing low-level data frame
+    comparison tools by adding clinical-trial-specific classification, lineage
+    and impact-assessment layers on top of deterministic comparison.
+License: MIT + file LICENSE
+URL: https://github.com/Hirujan-R/trialdiff, https://Hirujan-R.github.io/trialdiff/
+BugReports: https://github.com/Hirujan-R/trialdiff/issues
+Depends:
+    R (>= 4.1)
+Imports:
+    cli,
+    dplyr,
+    htmltools,
+    jsonlite,
+    rlang,
+    tibble
+Suggests:
+    admiral,
+    cards,
+    covr,
+    diffdf,
+    haven,
+    igraph,
+    knitr,
+    lintr,
+    metacore,
+    pharmaverseadam,
+    pharmaversesdtm,
+    pkgdown,
+    rmarkdown,
+    rtables,
+    styler,
+    tern,
+    testthat (>= 3.0.0),
+    waldo,
+    withr
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0
