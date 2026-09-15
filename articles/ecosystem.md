@@ -1,0 +1,47 @@
+# trialdiff and the existing ecosystem
+
+## Complement, not duplicate
+
+`trialdiff` does not attempt to replace low-level data frame comparison.
+It builds on the observation that detection is a solved problem, while
+*clinical interpretation* and *downstream impact* are not.
+
+| Tool / package | What it does | Where it stops | How trialdiff relates |
+|----|----|----|----|
+| `diffdf` | Detailed cell-level diff of two data frames, with keys | No clinical categorisation, no lineage, no impact | Could be used as an alternative comparison backend; `trialdiff` adds the clinical layers |
+| `waldo` | General R object comparison, used by `testthat` | General purpose, not clinical | Optional low-level equality backend (`backend = "waldo"`) |
+| `dplyr` / `base` | Joins and set operations | Building blocks only | Used internally; no user-facing duplication |
+| `haven` | Read SAS/SPSS/Stata | Transport only | Input reader for [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md) |
+| `admiral` | ADaM derivation | Does not compare data cuts | Downstream of the comparison; lineage edges can point at `admiral` derivations |
+| `metacore` / `metatools` | Metadata management and dataset checking | Metadata, not data-cut diffs | Can supply variable labels/types and lineage inputs |
+| `cards` | Analysis Results Data | Results, not change detection | Impacted “analysis” nodes can be `cards`/ARD objects |
+| `tern` / `rtables` | TLG generation | Output generation | Outputs (TLFs) are lineage nodes flagged for review |
+| SAS `PROC COMPARE` | Dataset comparison, value/label/length differences | No classification, lineage or impact | Conceptual ancestor; `trialdiff` is the R/pharmaverse equivalent plus context |
+| Commercial platforms | End-to-end clinical data management and validation | Closed, licence-bound | `trialdiff` is open-source and scriptable |
+
+## Integration points
+
+- **Input**: any data frame, including `haven`-imported SAS datasets and
+  `admiral`-derived ADaM.
+- **Metadata**: variable labels are read from the `label` attribute,
+  which `haven`, `metacore` and `admiral` all set.
+- **Lineage**: edges can reference `admiral` derivations, `cards` ARDs
+  and `tern`/`rtables` outputs.
+- **Output**: JSON and list reports for automated QC pipelines;
+  HTML/Quarto for human review.
+
+## Is this novel?
+
+The novelty is *not* in comparison. It is in the combination of:
+
+1.  a clinical change taxonomy;
+2.  explicit, user-declared lineage between datasets, variables,
+    analyses and outputs;
+3.  a transparent, policy-driven impact assessment that distinguishes
+    “definitely”, “potentially” and “unlikely”, and refuses to claim
+    statistical impact without a rerun;
+4.  reporting that lists exactly what a programmer or statistician must
+    review.
+
+No package in the pharmaverse currently occupies this position. See the
+project proposal in `proposal/` for the full gap analysis and roadmap.

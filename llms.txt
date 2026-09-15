@@ -1,0 +1,198 @@
+# trialdiff
+
+`trialdiff` is a clinical-trial **data-cut change detection and
+downstream impact assessment** framework for R, designed for the
+pharmaverse ecosystem.
+
+Existing tools tell you *that* two datasets differ. `trialdiff` answers
+the clinical-programming question that follows:
+
+> **What changed, what does the change represent, and which downstream
+> analyses or outputs might be affected?**
+
+It does this in five transparent, composable layers:
+
+| Layer | Function | Purpose |
+|----|----|----|
+| Compare | [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md) | Added/removed/modified observations and schema changes |
+| Classify | [`classify_changes()`](https://Hirujan-R.github.io/trialdiff/reference/classify_changes.md) | Rule-based clinical change taxonomy |
+| Trace | [`define_lineage()`](https://Hirujan-R.github.io/trialdiff/reference/define_lineage.md), [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md) | Explicit data lineage graph |
+| Assess | [`assess_impact()`](https://Hirujan-R.github.io/trialdiff/reference/assess_impact.md) | Definitely / potentially / unlikely impact |
+| Report | [`report_diff()`](https://Hirujan-R.github.io/trialdiff/reference/report_diff.md) | HTML, Quarto and machine-readable JSON |
+
+Everything is deterministic. There is no machine learning, and **no
+statistical impact is ever claimed** - analyses are flagged for review
+and rerun.
+
+## Installation
+
+``` r
+
+# install.packages("remotes")
+remotes::install_github("Hirujan-R/trialdiff")
+```
+
+## Quick start
+
+``` r
+
+library(trialdiff)
+
+diff <- compare_cut(
+  old = adsl_cut1,
+  new = adsl_cut2,
+  by = "USUBJID",
+  dataset = "ADSL"
+)
+
+classified <- classify_changes(diff)
+
+impact <- assess_impact(classified, adsl_adlb_lineage)
+
+report_diff(diff, impact = impact, output = "report.html")
+```
+
+A treatment assignment change (`TRT01P = "Placebo"` -\> `"Drug A"`) is
+detected, classified as a treatment-assignment change, traced through
+`ADSL.TRT01P -> ADLB.TRT01P -> lab summary -> MMRM -> efficacy table`,
+and every downstream object is flagged for review with a rationale.
+
+## Why not just `diffdf`?
+
+`diffdf` (and `waldo`) are excellent low-level comparison tools, and
+`trialdiff` deliberately does not reinvent them. `trialdiff` adds the
+layers that are specific to clinical programming:
+
+- a **clinical change taxonomy** (new subject, new visit, corrected
+  value, missingness transitions, derived-variable change,
+  treatment-assignment change, metadata change, …);
+- **explicit lineage** between datasets, variables, analyses and
+  outputs;
+- **auditable impact assessment** with a documented policy;
+- **review reports** that name the objects a programmer or statistician
+  must check.
+
+## Design principles
+
+- Deterministic comparison, not opaque inference.
+- Transparent, user-extensible rules.
+- Explicit, reproducible lineage metadata.
+- Auditable impact assessment with a written rationale for every flag.
+- Clinically meaningful reporting.
+
+## Documentation
+
+- [`vignette("trialdiff")`](https://Hirujan-R.github.io/trialdiff/articles/trialdiff.md) -
+  getting started.
+- [`vignette("change-classification")`](https://Hirujan-R.github.io/trialdiff/articles/change-classification.md) -
+  the rule system.
+- [`vignette("lineage-and-impact")`](https://Hirujan-R.github.io/trialdiff/articles/lineage-and-impact.md) -
+  lineage and impact.
+- [`vignette("ecosystem")`](https://Hirujan-R.github.io/trialdiff/articles/ecosystem.md) -
+  relationship to `diffdf`, `admiral`, `metacore`, `cards`, `tern`, SAS
+  `PROC COMPARE` and others.
+
+## Project proposal
+
+A full proposal covering the problem statement, ecosystem/gap analysis,
+novelty assessment, architecture, testing and roadmap is available in
+[`proposal/trialdiff-proposal.md`](https://Hirujan-R.github.io/trialdiff/proposal/trialdiff-proposal.md).
+
+## Code of conduct
+
+Please note that the `trialdiff` project is released with a [Contributor
+Code of
+Conduct](https://Hirujan-R.github.io/trialdiff/CODE_OF_CONDUCT.md). By
+contributing you agree to abide by its terms.
+
+## License
+
+MIT (c) Hirujan Rangaraj. No proprietary or real patient data is
+included; all example datasets are synthetic.
+
+# Package index
+
+## Compare
+
+Compare two data cuts.
+
+- [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md)
+  : Compare two data cuts of a clinical dataset
+
+- [`as_register()`](https://Hirujan-R.github.io/trialdiff/reference/as_register.md)
+  : Tidy register of every detected change
+
+- [`tdiff-object`](https://Hirujan-R.github.io/trialdiff/reference/tdiff-object.md)
+  :
+
+  The `tdiff` object
+
+## Classify
+
+Rule-based clinical change classification.
+
+- [`classify_changes()`](https://Hirujan-R.github.io/trialdiff/reference/classify_changes.md)
+  : Classify detected changes
+- [`td_rule()`](https://Hirujan-R.github.io/trialdiff/reference/td_rule.md)
+  : Change classification rules
+- [`td_default_rules()`](https://Hirujan-R.github.io/trialdiff/reference/td_default_rules.md)
+  : Default rule set
+- [`td_categories()`](https://Hirujan-R.github.io/trialdiff/reference/td_categories.md)
+  : Category label lookup
+
+## Trace
+
+Define and query data lineage.
+
+- [`define_lineage()`](https://Hirujan-R.github.io/trialdiff/reference/define_lineage.md)
+  : Define a data lineage graph
+- [`lineage_edge()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_edge.md)
+  : Define a lineage edge
+- [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md)
+  : Trace downstream dependencies
+- [`as_igraph()`](https://Hirujan-R.github.io/trialdiff/reference/as_igraph.md)
+  : Convert lineage to an igraph object
+
+## Assess
+
+Assess downstream impact.
+
+- [`assess_impact()`](https://Hirujan-R.github.io/trialdiff/reference/assess_impact.md)
+  : Assess downstream impact of classified changes
+- [`impact_policy()`](https://Hirujan-R.github.io/trialdiff/reference/impact_policy.md)
+  : Impact-assessment policy
+
+## Report
+
+Human- and machine-readable reports.
+
+- [`report_diff()`](https://Hirujan-R.github.io/trialdiff/reference/report_diff.md)
+  : Produce a change-review report
+- [`as_json()`](https://Hirujan-R.github.io/trialdiff/reference/as_json.md)
+  : Machine-readable report data
+
+## Data
+
+Synthetic example data.
+
+- [`adsl_cut1`](https://Hirujan-R.github.io/trialdiff/reference/adsl_cut1.md)
+  [`adsl_cut2`](https://Hirujan-R.github.io/trialdiff/reference/adsl_cut1.md)
+  : Synthetic ADSL data cuts
+- [`adlb_cut1`](https://Hirujan-R.github.io/trialdiff/reference/adlb_cut1.md)
+  [`adlb_cut2`](https://Hirujan-R.github.io/trialdiff/reference/adlb_cut1.md)
+  : Synthetic ADLB data cuts
+- [`adsl_adlb_lineage`](https://Hirujan-R.github.io/trialdiff/reference/adsl_adlb_lineage.md)
+  : Example ADSL/ADLB lineage
+
+# Articles
+
+### Articles
+
+- [Getting started with
+  trialdiff](https://Hirujan-R.github.io/trialdiff/articles/trialdiff.md):
+- [The change-classification
+  system](https://Hirujan-R.github.io/trialdiff/articles/change-classification.md):
+- [Lineage and impact
+  assessment](https://Hirujan-R.github.io/trialdiff/articles/lineage-and-impact.md):
+- [trialdiff and the existing
+  ecosystem](https://Hirujan-R.github.io/trialdiff/articles/ecosystem.md):
