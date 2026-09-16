@@ -3,6 +3,8 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Hirujan-R/trialdiff/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Hirujan-R/trialdiff/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/Hirujan-R/trialdiff/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Hirujan-R/trialdiff?branch=main)
+[![r-universe version](https://hirujan-r.r-universe.dev/trialdiff/badges/version)](https://hirujan-r.r-universe.dev/trialdiff)
+[![r-universe status](https://hirujan-r.r-universe.dev/trialdiff/badges/checks)](https://hirujan-r.r-universe.dev/trialdiff)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
@@ -32,6 +34,16 @@ impact is ever claimed** - analyses are flagged for review and rerun.
 ## Installation
 
 ```r
+# From r-universe (includes Windows/macOS binaries)
+install.packages(
+  "trialdiff",
+  repos = c(
+    hirujan = "https://hirujan-r.r-universe.dev",
+    CRAN = "https://cloud.r-project.org"
+  )
+)
+
+# Or from GitHub
 # install.packages("remotes")
 remotes::install_github("Hirujan-R/trialdiff")
 ```
