@@ -112,14 +112,15 @@ differences and translates the result into the same `tdiff` object.
 
 A full proposal covering the problem statement, ecosystem/gap analysis,
 novelty assessment, architecture, testing and roadmap is available in
-[`proposal/trialdiff-proposal.md`](https://Hirujan-R.github.io/trialdiff/proposal/trialdiff-proposal.md).
+the [project
+proposal](https://github.com/Hirujan-R/trialdiff/blob/main/proposal/trialdiff-proposal.md).
 
 ## Code of conduct
 
 Please note that the `trialdiff` project is released with a [Contributor
 Code of
-Conduct](https://Hirujan-R.github.io/trialdiff/CODE_OF_CONDUCT.md). By
-contributing you agree to abide by its terms.
+Conduct](https://github.com/Hirujan-R/trialdiff/blob/main/CODE_OF_CONDUCT.md).
+By contributing you agree to abide by its terms.
 
 ## License
 
