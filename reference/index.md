@@ -47,6 +47,21 @@ Define and query data lineage.
 - [`as_igraph()`](https://Hirujan-R.github.io/trialdiff/reference/as_igraph.md)
   : Convert lineage to an igraph object
 
+## Registry
+
+Declare analyses and outputs.
+
+- [`output_registry()`](https://Hirujan-R.github.io/trialdiff/reference/output_registry.md)
+  : Build an analysis/output registry
+- [`td_output()`](https://Hirujan-R.github.io/trialdiff/reference/td_output.md)
+  : Declare an analysis or output and its inputs
+- [`add_outputs()`](https://Hirujan-R.github.io/trialdiff/reference/add_outputs.md)
+  : Add an analysis/output registry to a lineage graph
+- [`add_edges()`](https://Hirujan-R.github.io/trialdiff/reference/add_edges.md)
+  : Add edges to a lineage graph
+- [`remove_edges()`](https://Hirujan-R.github.io/trialdiff/reference/remove_edges.md)
+  : Remove edges from a lineage graph
+
 ## Assess
 
 Assess downstream impact.

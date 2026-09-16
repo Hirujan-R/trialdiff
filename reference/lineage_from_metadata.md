@@ -9,7 +9,14 @@ are parsed from the `derivations` and `where` columns of `value_spec`.
 ## Usage
 
 ``` r
-lineage_from_metadata(metadata, include_where = TRUE, include_sdtm = TRUE, ...)
+lineage_from_metadata(
+  metadata,
+  include_where = TRUE,
+  include_sdtm = TRUE,
+  aliases = NULL,
+  overrides = NULL,
+  ...
+)
 ```
 
 ## Arguments
@@ -28,6 +35,19 @@ lineage_from_metadata(metadata, include_where = TRUE, include_sdtm = TRUE, ...)
 
   Logical. If `TRUE` (default), `DATASET.VARIABLE` references to
   non-ADaM domains (for example `DM.ARM`) are kept as source nodes.
+
+- aliases:
+
+  Optional data frame with columns `token` and `node`, and an optional
+  `dataset` column to scope the alias to one dataset. Aliases resolve
+  tokens that would otherwise be ambiguous or unknown.
+
+- overrides:
+
+  Optional edge table (for example from
+  [`output_registry()`](https://Hirujan-R.github.io/trialdiff/reference/output_registry.md))
+  merged into the generated graph with
+  [`add_edges()`](https://Hirujan-R.github.io/trialdiff/reference/add_edges.md).
 
 - ...:
 

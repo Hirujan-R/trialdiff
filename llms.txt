@@ -16,7 +16,7 @@ It does this in five transparent, composable layers:
 |----|----|----|
 | Compare | [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md) | Added/removed/modified observations and schema changes |
 | Classify | [`classify_changes()`](https://Hirujan-R.github.io/trialdiff/reference/classify_changes.md) | Rule-based clinical change taxonomy |
-| Trace | [`define_lineage()`](https://Hirujan-R.github.io/trialdiff/reference/define_lineage.md), [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md), [`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md) | Explicit data lineage graph |
+| Trace | [`define_lineage()`](https://Hirujan-R.github.io/trialdiff/reference/define_lineage.md), [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md), [`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md), [`output_registry()`](https://Hirujan-R.github.io/trialdiff/reference/output_registry.md) | Explicit data lineage graph |
 | Assess | [`assess_impact()`](https://Hirujan-R.github.io/trialdiff/reference/assess_impact.md) | Definitely / potentially / unlikely impact |
 | Report | [`report_diff()`](https://Hirujan-R.github.io/trialdiff/reference/report_diff.md) | HTML, Quarto and machine-readable JSON |
 
@@ -95,6 +95,8 @@ differences and translates the result into the same `tdiff` object.
 - [`vignette("ecosystem")`](https://Hirujan-R.github.io/trialdiff/articles/ecosystem.md) -
   relationship to `diffdf`, `admiral`, `metacore`, `cards`, `tern`, SAS
   `PROC COMPARE` and others.
+- [`vignette("case-study")`](https://Hirujan-R.github.io/trialdiff/articles/case-study.md) -
+  end-to-end walkthrough on public `pharmaverseadam` data.
 
 ## Project proposal
 
@@ -163,6 +165,21 @@ Define and query data lineage.
 - [`as_igraph()`](https://Hirujan-R.github.io/trialdiff/reference/as_igraph.md)
   : Convert lineage to an igraph object
 
+## Registry
+
+Declare analyses and outputs.
+
+- [`output_registry()`](https://Hirujan-R.github.io/trialdiff/reference/output_registry.md)
+  : Build an analysis/output registry
+- [`td_output()`](https://Hirujan-R.github.io/trialdiff/reference/td_output.md)
+  : Declare an analysis or output and its inputs
+- [`add_outputs()`](https://Hirujan-R.github.io/trialdiff/reference/add_outputs.md)
+  : Add an analysis/output registry to a lineage graph
+- [`add_edges()`](https://Hirujan-R.github.io/trialdiff/reference/add_edges.md)
+  : Add edges to a lineage graph
+- [`remove_edges()`](https://Hirujan-R.github.io/trialdiff/reference/remove_edges.md)
+  : Remove edges from a lineage graph
+
 ## Assess
 
 Assess downstream impact.
@@ -204,5 +221,7 @@ Synthetic example data.
   system](https://Hirujan-R.github.io/trialdiff/articles/change-classification.md):
 - [Lineage and impact
   assessment](https://Hirujan-R.github.io/trialdiff/articles/lineage-and-impact.md):
+- [Case study: data-cut review on public ADaM
+  data](https://Hirujan-R.github.io/trialdiff/articles/case-study.md):
 - [trialdiff and the existing
   ecosystem](https://Hirujan-R.github.io/trialdiff/articles/ecosystem.md):

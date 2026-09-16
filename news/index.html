@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">trialdiff</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><a class="dropdown-item" href="../articles/change-classification.html">Change classification</a></li>
     <li><a class="dropdown-item" href="../articles/lineage-and-impact.html">Lineage and impact</a></li>
     <li><a class="dropdown-item" href="../articles/ecosystem.html">Ecosystem</a></li>
+    <li><a class="dropdown-item" href="../articles/case-study.html">Case study</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -41,9 +42,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0.9000" id="trialdiff-0109000">trialdiff 0.1.0.9000<a class="anchor" aria-label="anchor" href="#trialdiff-0109000"></a></h2>
-<ul><li>Added <code><a href="../reference/lineage_from_metadata.html">lineage_from_metadata()</a></code>, which derives a lineage graph from a  object (or equivalent metadata tables), with provenance and a review list for ambiguous or unparsed references.</li>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="trialdiff-020">trialdiff 0.2.0<a class="anchor" aria-label="anchor" href="#trialdiff-020"></a></h2>
+<ul><li>Added an analysis/output registry: <code><a href="../reference/td_output.html">td_output()</a></code> and <code><a href="../reference/output_registry.html">output_registry()</a></code> declare analyses and outputs and their inputs, and <code><a href="../reference/add_outputs.html">add_outputs()</a></code>, <code><a href="../reference/add_edges.html">add_edges()</a></code> and <code><a href="../reference/remove_edges.html">remove_edges()</a></code> graft, extend or override a lineage graph.</li>
+<li>Added <code><a href="../reference/lineage_from_metadata.html">lineage_from_metadata()</a></code>, which derives a lineage graph from a  object (or equivalent metadata tables), with provenance and a review list for ambiguous or unparsed references. <code>aliases</code> resolve tokens that would otherwise be ambiguous or unknown, and <code>overrides</code> merge an analysis/output registry into the generated graph.</li>
 <li>Added a <code>"diffdf"</code> comparison backend to <code><a href="../reference/compare_cut.html">compare_cut()</a></code>, which delegates value comparison to the  package and translates its output into a <code>tdiff</code> object (schema comparison remains built in).</li>
+<li>Added a case-study vignette using public <code>pharmaverseadam</code> data.</li>
 <li>
 <code><a href="../reference/as_register.html">as_register()</a></code> now coerces key columns to character, fixing a failure when key columns were not character.</li>
 <li>New records in visit-based datasets are classified as <code>new_visit</code> rather than <code>new_assessment</code>.</li>

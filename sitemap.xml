@@ -3,6 +3,7 @@
 <url><loc>https://Hirujan-R.github.io/trialdiff/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/CONTRIBUTING.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/LICENSE-text.html</loc></url>
+<url><loc>https://Hirujan-R.github.io/trialdiff/articles/case-study.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/articles/change-classification.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/articles/ecosystem.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/articles/index.html</loc></url>
@@ -11,6 +12,8 @@
 <url><loc>https://Hirujan-R.github.io/trialdiff/authors.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/index.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/news/index.html</loc></url>
+<url><loc>https://Hirujan-R.github.io/trialdiff/reference/add_edges.html</loc></url>
+<url><loc>https://Hirujan-R.github.io/trialdiff/reference/add_outputs.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/adlb_cut1.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/adsl_adlb_lineage.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/adsl_cut1.html</loc></url>
@@ -27,9 +30,12 @@
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/lineage_provenance.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/lineage_review.html</loc></url>
+<url><loc>https://Hirujan-R.github.io/trialdiff/reference/output_registry.html</loc></url>
+<url><loc>https://Hirujan-R.github.io/trialdiff/reference/remove_edges.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/report_diff.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/td_categories.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/td_default_rules.html</loc></url>
+<url><loc>https://Hirujan-R.github.io/trialdiff/reference/td_output.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/td_rule.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/tdiff-object.html</loc></url>
 <url><loc>https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.html</loc></url>
