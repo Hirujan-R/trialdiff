@@ -413,10 +413,10 @@ feeds this TLF?".
 many-to-many. A graph gives correct reachability, supports both directions, and
 maps cleanly onto `igraph` for visualisation if desired.
 
-**Metadata sources:** edges can be authored directly, generated from `admiral`
-derivation code (future), or derived from `metacore` metadata (future). The
-current version keeps lineage explicit and user-owned, which is the only way to
-guarantee auditability.
+**Metadata sources:** edges can be authored directly, derived from `metacore`
+metadata with `lineage_from_metadata()` (implemented), or generated from
+`admiral` derivation code (future). Generated edges carry provenance and
+unresolved references are listed for review, so auditability is preserved.
 
 ---
 
@@ -519,7 +519,7 @@ is hidden.
 |---|---|
 | `haven` | Import SAS/SPSS/Stata datasets; labels read from the `label` attribute. |
 | `admiral` | Derivations become lineage nodes; no runtime dependency required. |
-| `metacore`/`metatools` | Supply variable labels/types and (future) auto-generate lineage. |
+| `metacore`/`metatools` | `lineage_from_metadata()` derives lineage from a `metacore` object; labels/types enrich nodes. |
 | `cards` | ARD-producing analyses are lineage analysis nodes. |
 | `tern`/`rtables` | TLF outputs are lineage output nodes. |
 | `pharmaverseadam`/`pharmaversesdtm` | Public datasets for examples and tests. |
@@ -528,8 +528,9 @@ is hidden.
 | `xportr` | Transport of flagged datasets; no direct coupling. |
 
 The package is designed to be **metadata-friendly**: if a study already has
-`metacore` metadata and `admiral` code, lineage can be generated from them in a
-future release. Until then, lineage is explicit, which is the safest default.
+`metacore` metadata, `lineage_from_metadata()` derives the data and
+derived-variable portion of the graph automatically, with provenance and a
+review list. Analysis/output dependencies remain user-supplied.
 
 ---
 
@@ -609,7 +610,8 @@ optional, richer examples.
    care.
 6. **Memory** scales with the number of changed cells, not total cells, but a
    complete rewrite of a large dataset will still be large.
-7. **Lineage is manual** until metadata-driven generation lands.
+7. **Lineage is manual** for analysis/output dependencies; the data and
+   derived-variable portion can be generated from `metacore` metadata.
 8. **No cross-dataset referential comparison** (e.g. orphan records) beyond
    lineage propagation.
 
@@ -667,7 +669,8 @@ optional, richer examples.
 * Property-based tests (e.g. `quickcheck`) for comparison invariants.
 
 **v0.2 - lineage at scale**
-* Lineage import from a tidy specification (CSV/YAML) and from `metacore`.
+* Lineage import from `metacore` (implemented) and from a tidy specification
+  (CSV/YAML).
 * Lineage visualisation via `igraph`/`visNetwork`.
 * Per-variable seeding granularity and edge weights/sensitivity.
 
@@ -752,8 +755,9 @@ lineage gaps.
    renamed). Detecting renames versus remove+add is a matching problem; fuzzy or
    rules-based key reconciliation is an open design question.
 2. **Lineage completeness.** The framework is only as good as its lineage.
-   Generating lineage from `admiral` code or `metacore` metadata is the highest-
-   value future work.
+   `lineage_from_metadata()` generates the data/derived-variable portion from
+   `metacore`; generating the analysis/output portion from `admiral` code or a
+   TLF registry is the highest-value future work.
 3. **Semantic equivalence.** A value can change representation without changing
    meaning (format, precision, controlled terminology). Distinguishing semantic
    from cosmetic change is hard and partly study-specific.

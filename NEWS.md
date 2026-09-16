@@ -1,5 +1,8 @@
 # trialdiff 0.1.0.9000
 
+* Added `lineage_from_metadata()`, which derives a lineage graph from a
+  \pkg{metacore} object (or equivalent metadata tables), with provenance and a
+  review list for ambiguous or unparsed references.
 * Added a `"diffdf"` comparison backend to `compare_cut()`, which delegates
   value comparison to the \pkg{diffdf} package and translates its output into a
   `tdiff` object (schema comparison remains built in).
