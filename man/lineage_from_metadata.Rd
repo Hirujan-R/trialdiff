@@ -4,7 +4,14 @@
 \alias{lineage_from_metadata}
 \title{Derive lineage from study metadata}
 \usage{
-lineage_from_metadata(metadata, include_where = TRUE, include_sdtm = TRUE, ...)
+lineage_from_metadata(
+  metadata,
+  include_where = TRUE,
+  include_sdtm = TRUE,
+  aliases = NULL,
+  overrides = NULL,
+  ...
+)
 }
 \arguments{
 \item{metadata}{A \code{metacore} object (from \pkg{metacore}) or a list with
@@ -16,6 +23,13 @@ elements \code{ds_vars}, \code{ds_spec}, \code{value_spec} and \code{derivations
 \item{include_sdtm}{Logical. If \code{TRUE} (default), \code{DATASET.VARIABLE}
 references to non-ADaM domains (for example \code{DM.ARM}) are kept as source
 nodes.}
+
+\item{aliases}{Optional data frame with columns \code{token} and \code{node}, and an
+optional \code{dataset} column to scope the alias to one dataset. Aliases
+resolve tokens that would otherwise be ambiguous or unknown.}
+
+\item{overrides}{Optional edge table (for example from \code{\link[=output_registry]{output_registry()}})
+merged into the generated graph with \code{\link[=add_edges]{add_edges()}}.}
 
 \item{...}{Reserved for future extensions.}
 }

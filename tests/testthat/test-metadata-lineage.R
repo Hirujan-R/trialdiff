@@ -133,6 +133,88 @@ test_that("metadata-derived lineage feeds trace and impact", {
   expect_true("ADLB.AVAL" %in% imp$impacts$node)
 })
 
+test_that("aliases resolve otherwise unresolved tokens", {
+  meta <- fake_metadata()
+  meta$ds_vars <- rbind(
+    meta$ds_vars,
+    data.frame(dataset = "ADLB", variable = "VISITNUM",
+               stringsAsFactors = FALSE)
+  )
+  meta$value_spec <- rbind(
+    meta$value_spec,
+    data.frame(
+      dataset = "ADLB", variable = "NEWVAR", derivation_id = "MT.ADLB.NEWVAR",
+      where = NA_character_, stringsAsFactors = FALSE
+    )
+  )
+  meta$derivations <- rbind(
+    meta$derivations,
+    data.frame(
+      derivation_id = "MT.ADLB.NEWVAR", derivation = "WINDOW + 1",
+      stringsAsFactors = FALSE
+    )
+  )
+  # WINDOW is unknown -> no edge without an alias
+  no_alias <- lineage_from_metadata(meta)
+  expect_false(edge_exists(no_alias, "ADLB.WINDOW", "ADLB.NEWVAR"))
+
+  with_alias <- lineage_from_metadata(
+    meta,
+    aliases = data.frame(token = "WINDOW", node = "ADLB.AVISIT",
+                         stringsAsFactors = FALSE)
+  )
+  expect_true(edge_exists(with_alias, "ADLB.AVISIT", "ADLB.NEWVAR"))
+})
+
+test_that("aliases can be scoped to a dataset", {
+  meta <- fake_metadata()
+  meta$value_spec <- rbind(
+    meta$value_spec,
+    data.frame(
+      dataset = "ADLB", variable = "ZZZ", derivation_id = "MT.ADLB.ZZZ",
+      where = NA_character_, stringsAsFactors = FALSE
+    )
+  )
+  meta$derivations <- rbind(
+    meta$derivations,
+    data.frame(derivation_id = "MT.ADLB.ZZZ", derivation = "TOKEN + 1",
+               stringsAsFactors = FALSE)
+  )
+  scoped <- lineage_from_metadata(
+    meta,
+    aliases = data.frame(token = "TOKEN", node = "ADSL.TRT01P",
+                         dataset = "ADSL", stringsAsFactors = FALSE)
+  )
+  expect_false(edge_exists(scoped, "ADSL.TRT01P", "ADLB.ZZZ"))
+
+  global <- lineage_from_metadata(
+    meta,
+    aliases = data.frame(token = "TOKEN", node = "ADSL.TRT01P",
+                         stringsAsFactors = FALSE)
+  )
+  expect_true(edge_exists(global, "ADSL.TRT01P", "ADLB.ZZZ"))
+})
+
+test_that("overrides merge a registry into metadata lineage", {
+  lin <- lineage_from_metadata(
+    fake_metadata(),
+    overrides = output_registry(
+      td_output("MMRM", depends_on = "ADLB.AVAL"),
+      td_output("Table_1", depends_on = "MMRM", type = "output")
+    )
+  )
+  expect_true(any(lin$edges$source == "registry"))
+  expect_true("Table_1" %in% lin$nodes$node)
+})
+
+test_that("lineage_from_metadata validates aliases", {
+  expect_error(
+    lineage_from_metadata(fake_metadata(),
+                          aliases = data.frame(a = 1)),
+    class = "trialdiff_error"
+  )
+})
+
 test_that("lineage_from_metadata works with a metacore object", {
   skip_if_not_installed("metacore")
   path <- system.file("extdata", "ADaM_define_CDISC_pilot3.xml",

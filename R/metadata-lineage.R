@@ -17,6 +17,11 @@
 #' @param include_sdtm Logical. If `TRUE` (default), `DATASET.VARIABLE`
 #'   references to non-ADaM domains (for example `DM.ARM`) are kept as source
 #'   nodes.
+#' @param aliases Optional data frame with columns `token` and `node`, and an
+#'   optional `dataset` column to scope the alias to one dataset. Aliases
+#'   resolve tokens that would otherwise be ambiguous or unknown.
+#' @param overrides Optional edge table (for example from [output_registry()])
+#'   merged into the generated graph with [add_edges()].
 #' @param ... Reserved for future extensions.
 #'
 #' @return A `td_lineage` object with additional elements `review` (references
@@ -48,6 +53,8 @@
 lineage_from_metadata <- function(metadata,
                                   include_where = TRUE,
                                   include_sdtm = TRUE,
+                                  aliases = NULL,
+                                  overrides = NULL,
                                   ...) {
   ds_vars <- td_meta_table(metadata, "ds_vars")
   value_spec <- td_meta_table(metadata, "value_spec")
@@ -65,6 +72,7 @@ lineage_from_metadata <- function(metadata,
   known <- split(ds_vars$variable, ds_vars$dataset)
   var_index <- split(ds_vars$dataset, ds_vars$variable)
   var_index <- lapply(var_index, unique)
+  alias_lookup <- td_alias_lookup(aliases)
 
   edges <- list()
   review <- list()
@@ -109,7 +117,7 @@ lineage_from_metadata <- function(metadata,
       text <- td_lookup_derivation(did, derivations)
       where <- if (has_where) value_spec$where[[i]] else NA_character_
 
-      parsed <- td_parse_derivation(text, var_index, ds, var)
+      parsed <- td_parse_derivation(text, var_index, ds, var, alias_lookup)
 
       for (j in seq_len(nrow(parsed$refs))) {
         add_edge(
@@ -178,23 +186,22 @@ lineage_from_metadata <- function(metadata,
     .data$node, .keep_all = TRUE
   )
 
-  structure(
-    list(
-      edges = edge_tbl,
-      nodes = nodes,
-      review = if (length(review) == 0L) {
-        tibble::tibble(
-          dataset = character(), variable = character(),
-          derivation_id = character(), derivation = character(),
-          reason = character()
-        )
-      } else {
-        dplyr::distinct(dplyr::bind_rows(review))
-      },
-      provenance = edge_tbl
-    ),
-    class = "td_lineage"
-  )
+  review_tbl <- if (length(review) == 0L) {
+    tibble::tibble(
+      dataset = character(), variable = character(),
+      derivation_id = character(), derivation = character(),
+      reason = character()
+    )
+  } else {
+    dplyr::distinct(dplyr::bind_rows(review))
+  }
+
+  lin <- td_lineage_object(edge_tbl, nodes, review = review_tbl,
+                           provenance = edge_tbl)
+  if (!is.null(overrides)) {
+    lin <- add_edges(lin, overrides)
+  }
+  lin
 }
 
 #' References needing review after metadata-driven lineage
@@ -256,7 +263,8 @@ td_is_blank <- function(x) {
 
 #' Parse a derivation string into resolved variable references
 #' @noRd
-td_parse_derivation <- function(text, var_index, dataset, target_var) {
+td_parse_derivation <- function(text, var_index, dataset, target_var,
+                                aliases = NULL) {
   refs <- tibble::tibble(node = character(), token = character())
   unresolved <- tibble::tibble(token = character())
   if (td_is_blank(text)) {
@@ -283,6 +291,14 @@ td_parse_derivation <- function(text, var_index, dataset, target_var) {
     if (identical(b, target_var)) {
       next
     }
+    alias_node <- td_resolve_alias(aliases, dataset, b)
+    if (!is.null(alias_node)) {
+      if (!identical(alias_node, target)) {
+        nodes <- c(nodes, alias_node)
+        tokens <- c(tokens, b)
+      }
+      next
+    }
     candidates <- var_index[[b]]
     if (is.null(candidates)) {
       next
@@ -306,6 +322,48 @@ td_parse_derivation <- function(text, var_index, dataset, target_var) {
     unresolved <- tibble::tibble(token = unique(unresolved_tokens))
   }
   list(refs = refs, unresolved = unresolved)
+}
+
+#' Build alias lookups from a token/node table
+#' @noRd
+td_alias_lookup <- function(aliases) {
+  if (is.null(aliases)) {
+    return(NULL)
+  }
+  aliases <- tibble::as_tibble(aliases)
+  if (!all(c("token", "node") %in% names(aliases))) {
+    td_abort("An {.arg aliases} table must have {.val token} and {.val node} columns.")
+  }
+  if (!"dataset" %in% names(aliases)) {
+    aliases$dataset <- NA_character_
+  }
+  scoped <- aliases[!is.na(aliases$dataset), , drop = FALSE]
+  global <- aliases[is.na(aliases$dataset), , drop = FALSE]
+  scoped_keys <- if (nrow(scoped) == 0L) {
+    character()
+  } else {
+    paste0(scoped$dataset, "\u001f", scoped$token)
+  }
+  list(
+    scoped = stats::setNames(scoped$node, scoped_keys),
+    global = stats::setNames(global$node, global$token)
+  )
+}
+
+#' @noRd
+td_resolve_alias <- function(aliases, dataset, token) {
+  if (is.null(aliases)) {
+    return(NULL)
+  }
+  scoped <- aliases$scoped[paste0(dataset, "\u001f", token)]
+  if (length(scoped) == 1L && !is.na(scoped)) {
+    return(unname(scoped))
+  }
+  global <- aliases$global[token]
+  if (length(global) == 1L && !is.na(global)) {
+    return(unname(global))
+  }
+  NULL
 }
 
 #' Parse a where clause into same-dataset variable references
