@@ -1,6 +1,6 @@
 Package: trialdiff
 Title: Clinical Trial Data-Cut Change Detection and Impact Assessment
-Version: 0.1.0.9000
+Version: 0.2.0
 Authors@R:
     person("Hirujan", "Rangaraj", email = "hirujanrangaraj@gmail.com",
            role = c("aut", "cre"))

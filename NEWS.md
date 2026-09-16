@@ -1,11 +1,17 @@
-# trialdiff 0.1.0.9000
+# trialdiff 0.2.0
 
+* Added an analysis/output registry: `td_output()` and `output_registry()`
+  declare analyses and outputs and their inputs, and `add_outputs()`,
+  `add_edges()` and `remove_edges()` graft, extend or override a lineage graph.
 * Added `lineage_from_metadata()`, which derives a lineage graph from a
   \pkg{metacore} object (or equivalent metadata tables), with provenance and a
-  review list for ambiguous or unparsed references.
+  review list for ambiguous or unparsed references. `aliases` resolve tokens
+  that would otherwise be ambiguous or unknown, and `overrides` merge an
+  analysis/output registry into the generated graph.
 * Added a `"diffdf"` comparison backend to `compare_cut()`, which delegates
   value comparison to the \pkg{diffdf} package and translates its output into a
   `tdiff` object (schema comparison remains built in).
+* Added a case-study vignette using public `pharmaverseadam` data.
 * `as_register()` now coerces key columns to character, fixing a failure when
   key columns were not character.
 * New records in visit-based datasets are classified as `new_visit` rather than
@@ -29,4 +35,3 @@
 # trialdiff 0.0.0.9000
 
 * Initial development version.
-

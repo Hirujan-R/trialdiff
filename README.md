@@ -22,7 +22,7 @@ It does this in five transparent, composable layers:
 |-------|----------|---------|
 | Compare | `compare_cut()` | Added/removed/modified observations and schema changes |
 | Classify | `classify_changes()` | Rule-based clinical change taxonomy |
-| Trace | `define_lineage()`, `trace_dependencies()`, `lineage_from_metadata()` | Explicit data lineage graph |
+| Trace | `define_lineage()`, `trace_dependencies()`, `lineage_from_metadata()`, `output_registry()` | Explicit data lineage graph |
 | Assess | `assess_impact()` | Definitely / potentially / unlikely impact |
 | Report | `report_diff()` | HTML, Quarto and machine-readable JSON |
 
@@ -93,6 +93,8 @@ result into the same `tdiff` object.
 * `vignette("lineage-and-impact")` - lineage and impact.
 * `vignette("ecosystem")` - relationship to `diffdf`, `admiral`, `metacore`,
   `cards`, `tern`, SAS `PROC COMPARE` and others.
+* `vignette("case-study")` - end-to-end walkthrough on public `pharmaverseadam`
+  data.
 
 ## Project proposal
 
