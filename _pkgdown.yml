@@ -38,6 +38,9 @@ reference:
   contents:
   - define_lineage
   - lineage_edge
+  - lineage_from_metadata
+  - lineage_review
+  - lineage_provenance
   - trace_dependencies
   - as_igraph
 - title: Assess

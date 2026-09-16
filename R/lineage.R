@@ -191,6 +191,12 @@ print.td_lineage <- function(x, ...) {
   for (nm in names(counts)) {
     cli::cli_text("  {.strong {nm}}: {counts[[nm]]}")
   }
+  if (!is.null(x$review) && nrow(x$review) > 0L) {
+    cli::cli_alert_warning(
+      "{nrow(x$review)} metadata reference{?s} need review \\
+       ({.fun lineage_review})."
+    )
+  }
   invisible(x)
 }
 
