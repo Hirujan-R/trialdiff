@@ -10,7 +10,10 @@ Description: A transparent, rule-based framework for detecting changes between
     and assessing which downstream analyses and outputs may be affected.
     The package is designed to complement existing low-level data frame
     comparison tools by adding clinical-trial-specific classification, lineage
-    and impact-assessment layers on top of deterministic comparison.
+    and impact-assessment layers on top of deterministic comparison. The
+    rule-based classification is similar in spirit to the data validation
+    infrastructure of van der Loo and de Jonge (2021)
+    <doi:10.18637/jss.v097.i10>.
 License: MIT + file LICENSE
 URL: https://github.com/Hirujan-R/trialdiff, https://Hirujan-R.github.io/trialdiff/
 BugReports: https://github.com/Hirujan-R/trialdiff/issues
