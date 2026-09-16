@@ -28,6 +28,16 @@ and rerun.
 
 ``` r
 
+# From r-universe (includes Windows/macOS binaries)
+install.packages(
+  "trialdiff",
+  repos = c(
+    hirujan = "https://hirujan-r.r-universe.dev",
+    CRAN = "https://cloud.r-project.org"
+  )
+)
+
+# Or from GitHub
 # install.packages("remotes")
 remotes::install_github("Hirujan-R/trialdiff")
 ```
