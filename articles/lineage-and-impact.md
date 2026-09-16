@@ -135,3 +135,31 @@ impact$unlinked
 
 This is a feature, not a limitation: the impact assessment is only as
 complete as the lineage metadata, and the report makes that explicit.
+
+## Generating lineage from metadata
+
+Hand-authoring lineage does not scale. If you already maintain a object
+(from Define-XML or a specification workbook),
+[`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md)
+derives the data and derived-variable portion of the graph from the
+`derivations` and `where` metadata:
+
+``` r
+
+mc <- metacore::define_to_metacore("define.xml")
+lin <- lineage_from_metadata(mc)
+trace_dependencies(lin, from = "ADSL.TRT01P")
+```
+
+Edges carry their provenance, and anything that cannot be resolved is
+listed for review rather than guessed:
+
+``` r
+
+lineage_provenance(lin)
+lineage_review(lin)
+```
+
+Analysis and output dependencies are not described by data metadata, so
+that part of the graph is still supplied by the study team and merged
+in.

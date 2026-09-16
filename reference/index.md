@@ -36,6 +36,12 @@ Define and query data lineage.
   : Define a data lineage graph
 - [`lineage_edge()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_edge.md)
   : Define a lineage edge
+- [`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md)
+  : Derive lineage from study metadata
+- [`lineage_review()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_review.md)
+  : References needing review after metadata-driven lineage
+- [`lineage_provenance()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_provenance.md)
+  : Provenance of metadata-driven lineage edges
 - [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md)
   : Trace downstream dependencies
 - [`as_igraph()`](https://Hirujan-R.github.io/trialdiff/reference/as_igraph.md)

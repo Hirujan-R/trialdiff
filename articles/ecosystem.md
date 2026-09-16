@@ -13,7 +13,7 @@ It builds on the observation that detection is a solved problem, while
 | `dplyr` / `base` | Joins and set operations | Building blocks only | Used internally; no user-facing duplication |
 | `haven` | Read SAS/SPSS/Stata | Transport only | Input reader for [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md) |
 | `admiral` | ADaM derivation | Does not compare data cuts | Downstream of the comparison; lineage edges can point at `admiral` derivations |
-| `metacore` / `metatools` | Metadata management and dataset checking | Metadata, not data-cut diffs | Can supply variable labels/types and lineage inputs |
+| `metacore` / `metatools` | Metadata management and dataset checking | Metadata, not data-cut diffs | [`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md) derives a lineage graph from a `metacore` object |
 | `cards` | Analysis Results Data | Results, not change detection | Impacted “analysis” nodes can be `cards`/ARD objects |
 | `tern` / `rtables` | TLG generation | Output generation | Outputs (TLFs) are lineage nodes flagged for review |
 | SAS `PROC COMPARE` | Dataset comparison, value/label/length differences | No classification, lineage or impact | Conceptual ancestor; `trialdiff` is the R/pharmaverse equivalent plus context |

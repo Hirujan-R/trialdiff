@@ -2,6 +2,11 @@
 
 ## trialdiff 0.1.0.9000
 
+- Added
+  [`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md),
+  which derives a lineage graph from a object (or equivalent metadata
+  tables), with provenance and a review list for ambiguous or unparsed
+  references.
 - Added a `"diffdf"` comparison backend to
   [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md),
   which delegates value comparison to the package and translates its

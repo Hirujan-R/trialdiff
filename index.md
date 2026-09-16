@@ -16,7 +16,7 @@ It does this in five transparent, composable layers:
 |----|----|----|
 | Compare | [`compare_cut()`](https://Hirujan-R.github.io/trialdiff/reference/compare_cut.md) | Added/removed/modified observations and schema changes |
 | Classify | [`classify_changes()`](https://Hirujan-R.github.io/trialdiff/reference/classify_changes.md) | Rule-based clinical change taxonomy |
-| Trace | [`define_lineage()`](https://Hirujan-R.github.io/trialdiff/reference/define_lineage.md), [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md) | Explicit data lineage graph |
+| Trace | [`define_lineage()`](https://Hirujan-R.github.io/trialdiff/reference/define_lineage.md), [`trace_dependencies()`](https://Hirujan-R.github.io/trialdiff/reference/trace_dependencies.md), [`lineage_from_metadata()`](https://Hirujan-R.github.io/trialdiff/reference/lineage_from_metadata.md) | Explicit data lineage graph |
 | Assess | [`assess_impact()`](https://Hirujan-R.github.io/trialdiff/reference/assess_impact.md) | Definitely / potentially / unlikely impact |
 | Report | [`report_diff()`](https://Hirujan-R.github.io/trialdiff/reference/report_diff.md) | HTML, Quarto and machine-readable JSON |
 

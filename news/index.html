@@ -42,7 +42,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9000" id="trialdiff-0109000">trialdiff 0.1.0.9000<a class="anchor" aria-label="anchor" href="#trialdiff-0109000"></a></h2>
-<ul><li>Added a <code>"diffdf"</code> comparison backend to <code><a href="../reference/compare_cut.html">compare_cut()</a></code>, which delegates value comparison to the  package and translates its output into a <code>tdiff</code> object (schema comparison remains built in).</li>
+<ul><li>Added <code><a href="../reference/lineage_from_metadata.html">lineage_from_metadata()</a></code>, which derives a lineage graph from a  object (or equivalent metadata tables), with provenance and a review list for ambiguous or unparsed references.</li>
+<li>Added a <code>"diffdf"</code> comparison backend to <code><a href="../reference/compare_cut.html">compare_cut()</a></code>, which delegates value comparison to the  package and translates its output into a <code>tdiff</code> object (schema comparison remains built in).</li>
 <li>
 <code><a href="../reference/as_register.html">as_register()</a></code> now coerces key columns to character, fixing a failure when key columns were not character.</li>
 <li>New records in visit-based datasets are classified as <code>new_visit</code> rather than <code>new_assessment</code>.</li>
