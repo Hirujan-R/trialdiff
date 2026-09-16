@@ -1,0 +1,175 @@
+---
+title: "Case study: data-cut review on public ADaM data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Case study: data-cut review on public ADaM data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+has_pva <- requireNamespace("pharmaverseadam", quietly = TRUE)
+```
+
+This case study runs the full `trialdiff` pipeline on the public
+`pharmaverseadam` datasets: two data cuts are compared, changes are classified,
+lineage is generated from metadata and an output registry, downstream impact is
+assessed, and a review report is produced. No proprietary data is used.
+
+```{r, eval = has_pva}
+library(trialdiff)
+```
+
+## The two data cuts
+
+We use `ADSL` and a subset of `ADLB` (three laboratory parameters) and build a
+later cut that introduces the kinds of changes seen in practice: two new
+subjects, a treatment-assignment correction, a corrected laboratory value and a
+value that becomes missing.
+
+```{r, eval = has_pva}
+params <- c("ALT", "AST", "CREAT")
+adsl_full <- pharmaverseadam::adsl
+adlb_full <- subset(pharmaverseadam::adlb, PARAMCD %in% params)
+
+subjects <- unique(as.character(adsl_full$USUBJID))
+new_subjects <- tail(subjects, 2)
+
+adsl_cut1 <- adsl_full[!adsl_full$USUBJID %in% new_subjects, ]
+adlb_cut1 <- adlb_full[!adlb_full$USUBJID %in% new_subjects, ]
+adsl_cut2 <- adsl_full
+adlb_cut2 <- adlb_full
+
+trt_subject <- adsl_cut2$USUBJID[which(adsl_cut2$TRT01P == "Placebo")[1]]
+for (v in c("TRT01P", "TRT01A")) {
+  adsl_cut2[[v]][adsl_cut2$USUBJID == trt_subject] <- "Xanomeline Low Dose"
+}
+for (v in c("TRT01P", "TRTP")) {
+  adlb_cut2[[v]][adlb_cut2$USUBJID == trt_subject] <- "Xanomeline Low Dose"
+}
+
+i <- which(adlb_cut2$USUBJID == trt_subject & adlb_cut2$PARAMCD == "ALT" &
+             adlb_cut2$AVISIT == "Week 4")[1]
+adlb_cut2$AVAL[i] <- adlb_cut2$AVAL[i] + 7
+adlb_cut2$CHG[i] <- adlb_cut2$AVAL[i] - adlb_cut2$BASE[i]
+
+j <- which(adlb_cut2$PARAMCD == "AST" & adlb_cut2$AVISIT == "Week 2")[1]
+adlb_cut2$AVAL[j] <- NA_real_
+adlb_cut2$CHG[j] <- NA_real_
+
+c(adsl = nrow(adsl_cut2) - nrow(adsl_cut1), adlb = nrow(adlb_cut2) - nrow(adlb_cut1))
+```
+
+## Lineage from metadata plus a registry
+
+The data and derived-variable portion of the lineage comes from a small metadata
+specification (the same shape as a `metacore` object). Analyses and outputs are
+declared with `output_registry()` and grafted on with `overrides`.
+
+```{r, eval = has_pva}
+metadata <- list(
+  ds_spec = data.frame(
+    dataset = c("ADSL", "ADLB"),
+    label = c("Subject-Level Analysis", "Laboratory Analysis")
+  ),
+  ds_vars = data.frame(
+    dataset = c("ADSL", "ADSL", "ADSL", "ADLB", "ADLB", "ADLB", "ADLB", "ADLB"),
+    variable = c("USUBJID", "TRT01P", "SAFFL", "USUBJID", "PARAMCD",
+                 "TRT01P", "AVAL", "CHG")
+  ),
+  value_spec = data.frame(
+    dataset = c("ADSL", "ADLB", "ADLB", "ADLB", "ADLB"),
+    variable = c("TRT01P", "TRT01P", "AVAL", "BASE", "CHG"),
+    derivation_id = c("MT.ADSL.TRT01P", "MT.ADLB.TRT01P", "MT.ADLB.AVAL",
+                      "MT.ADLB.BASE", "MT.ADLB.CHG"),
+    where = c(NA, NA, "PARAMCD == 'ALT'", NA, NA)
+  ),
+  derivations = data.frame(
+    derivation_id = c("MT.ADSL.TRT01P", "MT.ADLB.TRT01P", "MT.ADLB.AVAL",
+                      "MT.ADLB.BASE", "MT.ADLB.CHG"),
+    derivation = c("DM.ARM", "ADSL.TRT01P", "LB.LBSTRESN", "ADLB.AVAL",
+                   "AVAL - BASE")
+  )
+)
+
+registry <- output_registry(
+  td_output("Lab_Summary_By_Treatment",
+            depends_on = c("ADLB.TRT01P", "ADLB.AVAL"),
+            type = "analysis", relationship = "summarises"),
+  td_output("MMRM", depends_on = c("ADLB.AVAL", "ADLB.CHG")),
+  td_output("Table_14_2_1", depends_on = "Lab_Summary_By_Treatment",
+            type = "output"),
+  td_output("Table_14_2_2", depends_on = "MMRM", type = "output")
+)
+
+lineage <- lineage_from_metadata(metadata, overrides = registry)
+lineage
+```
+
+The generated graph reaches from the raw source through derived variables to
+analyses and TLFs, and every edge keeps its provenance:
+
+```{r, eval = has_pva}
+lineage_provenance(lineage)[, c("from", "to", "relationship", "source")]
+```
+
+## Compare and classify
+
+```{r, eval = has_pva}
+adsl_diff <- compare_cut(adsl_cut1, adsl_cut2, by = "USUBJID",
+                         dataset = "ADSL") |>
+  classify_changes()
+adlb_diff <- compare_cut(adlb_cut1, adlb_cut2,
+                         by = c("USUBJID", "PARAMCD", "AVISIT"),
+                         dataset = "ADLB") |>
+  classify_changes()
+
+knitr::kable(table(adsl_diff$register$category_label),
+             col.names = c("Category", "ADSL"))
+knitr::kable(table(adlb_diff$register$category_label),
+             col.names = c("Category", "ADLB"))
+```
+
+## Assess downstream impact
+
+```{r, eval = has_pva}
+adlb_impact <- assess_impact(adlb_diff, lineage)
+adlb_impact$impacts[, c("node", "node_type", "level", "depth", "requires_rerun")]
+```
+
+A treatment-assignment change flows to `ADLB.TRT01P`, the by-treatment summary
+and the MMRM, and every analysis or output is flagged for review or rerun. No
+statistical impact is claimed.
+
+## Review report
+
+```{r, eval = has_pva}
+report <- report_diff(adsl_diff,
+                      impact = assess_impact(adsl_diff, lineage),
+                      output = "list")
+report$data$review_items
+```
+
+Writing `report_diff(..., output = "cut-review.html")` produces a self-contained
+HTML report, and `as_json()` produces machine-readable output for automated QC
+pipelines.
+
+## What this demonstrates
+
+* Deterministic comparison of two real data cuts, with clinical classification.
+* Lineage generated from metadata, extended with an analysis/output registry.
+* Transparent impact assessment that reaches TLFs and never claims statistical
+  significance.
+* A single workflow: `compare_cut()` -> `classify_changes()` ->
+  `lineage_from_metadata()` + `output_registry()` -> `assess_impact()` ->
+  `report_diff()`.
+
+## Limitations
+
+* The metadata above is a compact illustration; a real study would load it from
+  Define-XML with `metacore::define_to_metacore()`.
+* Analysis/output dependencies are not described by data metadata and must be
+  supplied by the study team (here, via `output_registry()`).
+* Impact is a review signal. Confirming whether a summary or model result
+  actually changes requires rerunning it.

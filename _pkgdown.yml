@@ -18,6 +18,8 @@ navbar:
         href: articles/lineage-and-impact.html
       - text: Ecosystem
         href: articles/ecosystem.html
+      - text: Case study
+        href: articles/case-study.html
 
 reference:
 - title: Compare
@@ -43,6 +45,14 @@ reference:
   - lineage_provenance
   - trace_dependencies
   - as_igraph
+- title: Registry
+  desc: Declare analyses and outputs.
+  contents:
+  - output_registry
+  - td_output
+  - add_outputs
+  - add_edges
+  - remove_edges
 - title: Assess
   desc: Assess downstream impact.
   contents:
@@ -67,4 +77,5 @@ articles:
   - trialdiff
   - change-classification
   - lineage-and-impact
+  - case-study
   - ecosystem
