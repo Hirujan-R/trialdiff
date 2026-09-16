@@ -135,13 +135,16 @@ td_as_edges <- function(x) {
   if (!all(c("from", "to") %in% names(x))) {
     td_abort("An edge table must contain {.val from} and {.val to} columns.")
   }
-  x$from_type <- x$from_type %||% td_infer_node_type(x$from)
-  x$to_type <- x$to_type %||% td_infer_node_type(x$to)
-  x$relationship <- x$relationship %||% rep("derives", nrow(x))
-  x$condition <- x$condition %||% rep(NA_character_, nrow(x))
-  x$label <- x$label %||% rep(NA_character_, nrow(x))
+  x$from_type <- x[["from_type"]] %||% td_infer_node_type(x$from)
+  x$to_type <- x[["to_type"]] %||% td_infer_node_type(x$to)
+  x$relationship <- x[["relationship"]] %||% rep("derives", nrow(x))
+  x$condition <- x[["condition"]] %||% rep(NA_character_, nrow(x))
+  x$label <- x[["label"]] %||% rep(NA_character_, nrow(x))
+  x$source <- x[["source"]] %||% rep("user", nrow(x))
+  x$derivation_id <- x[["derivation_id"]] %||% rep(NA_character_, nrow(x))
+  x$derivation <- x[["derivation"]] %||% rep(NA_character_, nrow(x))
   x[, c("from", "from_type", "to", "to_type", "relationship",
-        "condition", "label")]
+        "condition", "label", "source", "derivation_id", "derivation")]
 }
 
 #' @noRd
